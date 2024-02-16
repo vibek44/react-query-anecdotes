@@ -1,7 +1,10 @@
-import { useQuery,useMutation,useQueryClient } from '@tanstack/react-query'
+import { useMutation,useQueryClient } from '@tanstack/react-query'
 import { createAnecdote } from '../services/communication'
+import { useContext } from 'react'
+import NotificationContext from './NotificationContext'
 
 const AnecdoteForm = () => {
+  const[ ,notificationDispatch]=useContext(NotificationContext)
   const queryClient= useQueryClient()
  
   const newAnecdoteMutation=useMutation({
@@ -10,6 +13,9 @@ const AnecdoteForm = () => {
     //queryClient.invalidateQueries('anecdotes') // makes second async data request automatic updtae after invalidation
       const anecdotes=queryClient.getQueryData(['anecdotes'])//manulally updating  front state for optimization
       queryClient.setQueryData(['anecdotes'],anecdotes.concat(newAnecdote))
+    },
+    onError:(error)=>{
+      notificationDispatch({type:'SETERROR',payload:error.response.data.error})
     }
   })
  
@@ -18,6 +24,10 @@ const AnecdoteForm = () => {
     const content = event.target.anecdote.value
     event.target.anecdote.value = ''
     newAnecdoteMutation.mutate({content,votes:0})
+    notificationDispatch({type:'SETADD', payload:content})
+    setTimeout(()=>{
+     notificationDispatch({type:'REMOVE'})
+    },5000)
      //console.log(content)
   }
 
