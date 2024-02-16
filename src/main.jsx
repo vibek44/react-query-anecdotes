@@ -1,7 +1,6 @@
 
 import ReactDOM from 'react-dom/client'
 import { NotificationContextProvider } from './components/NotificationContext.jsx'
-
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 import App from './App.jsx'
